@@ -53,6 +53,11 @@ func TestCellReader(t *testing.T) {
 		t.Fatalf("Expected %s got %s", v5test, v5)
 	}
 
+	v6test := false
+	v6, _ := cr.GetBool("Sheet1", "B5")
+	if v6 != v6test {
+		t.Fatalf("Expected %t got %t", v6test, v6)
+	}
 }
 
 func ExampleCellReader() {
