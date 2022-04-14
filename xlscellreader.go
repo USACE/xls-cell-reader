@@ -9,14 +9,14 @@ import (
 )
 
 type CellReader struct {
-	f *excelize.File
+	F *excelize.File
 }
 
 /*
 Reads a string at the sheet and axis location
 */
 func (c CellReader) GetString(sheet string, axis string) (string, error) {
-	return c.f.GetCellValue(sheet, axis)
+	return c.F.GetCellValue(sheet, axis)
 }
 
 /*
@@ -50,7 +50,7 @@ cannot be parsed to an int and converted into a date value.
 */
 func (c CellReader) GetDate(sheet string, axis string) (time.Time, error) {
 	var xlsEpoch = time.Date(1899, time.December, 30, 0, 0, 0, 0, time.UTC)
-	c.f.SetCellStyle(sheet, axis, axis, 0)
+	c.F.SetCellStyle(sheet, axis, axis, 0)
 	val, err := c.getVal(sheet, axis, excelize.CellTypeNumber)
 	if err != nil {
 		return time.Time{}, err
@@ -77,12 +77,12 @@ func (c CellReader) GetFormattedDate(sheet string, axis string, dateFmt string) 
 }
 
 func (c CellReader) getVal(sheet string, axis string, cellType excelize.CellType) (string, error) {
-	cellTypeRead, err := c.f.GetCellType(sheet, axis)
+	cellTypeRead, err := c.F.GetCellType(sheet, axis)
 	if err != nil {
 		return "", err
 	}
 	if cellTypeRead != cellType {
 		return "", errors.New("invalid cell type.")
 	}
-	return c.f.GetCellValue(sheet, axis)
+	return c.F.GetCellValue(sheet, axis)
 }
