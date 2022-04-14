@@ -20,6 +20,18 @@ func (c CellReader) GetString(sheet string, axis string) (string, error) {
 }
 
 /*
+Reads a bool at the sheet and axis location
+Returns an error if the cell is not a boolean or the string value cannot be parsed to a bool.
+*/
+func (c CellReader) GetBool(sheet string, axis string) (bool, error) {
+	val, err := c.getVal(sheet, axis, excelize.CellTypeBool)
+	if err != nil {
+		return false, err
+	}
+	return strconv.ParseBool(val)
+}
+
+/*
 Reads an int at the sheet and axis location.
 Returns an error if the cell is not numeric or the string value cannot be parsed to an integer.
 */
@@ -73,7 +85,7 @@ func (c CellReader) GetFormattedDate(sheet string, axis string, dateFmt string) 
 	if err != nil {
 		return time.Time{}, err
 	}
-	return time.Parse(dateFmt, val)
+	return excelDateToDate(val), err
 }
 
 func (c CellReader) getVal(sheet string, axis string, cellType excelize.CellType) (string, error) {
@@ -81,8 +93,14 @@ func (c CellReader) getVal(sheet string, axis string, cellType excelize.CellType
 	if err != nil {
 		return "", err
 	}
-	if cellTypeRead != cellType {
+	if cellTypeRead != excelize.CellTypeUnset && cellTypeRead != cellType {
 		return "", errors.New("invalid cell type.")
 	}
-	return c.F.GetCellValue(sheet, axis)
+	return c.F.GetCellValue(sheet, axis, excelize.Options{RawCellValue: true})
+}
+
+func excelDateToDate(excelDate string) time.Time {
+	var excelEpoch = time.Date(1899, time.December, 30, 0, 0, 0, 0, time.UTC)
+	var days, _ = strconv.Atoi(excelDate)
+	return excelEpoch.Add(time.Second * time.Duration(days*86400))
 }
