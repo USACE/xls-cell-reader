@@ -22,7 +22,7 @@ func TestCellReader(t *testing.T) {
 		}
 	}()
 
-	cr := CellReader{f}
+	cr := NewCellReader(f)
 
 	vtest := 1
 	v, err := cr.GetInt("Sheet1", "B1")
@@ -68,7 +68,7 @@ func ExampleCellReader() {
 		}
 	}()
 
-	cr := CellReader{f}
+	cr := NewCellReader(f)
 
 	v, err := cr.GetInt("Sheet1", "B1")
 	if err != nil {

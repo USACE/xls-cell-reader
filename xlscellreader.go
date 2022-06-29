@@ -8,6 +8,10 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+func NewCellReader(f *excelize.File) CellReader {
+	return CellReader{f}
+}
+
 type CellReader struct {
 	f *excelize.File
 }
