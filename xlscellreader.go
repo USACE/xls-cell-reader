@@ -8,6 +8,8 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+const CELL_TYPE_UNSET = 0
+
 func NewCellReader(f *excelize.File) CellReader {
 	return CellReader{f}
 }
@@ -85,7 +87,7 @@ func (c CellReader) getVal(sheet string, axis string, cellType excelize.CellType
 	if err != nil {
 		return "", err
 	}
-	if cellTypeRead != cellType {
+	if cellTypeRead != CELL_TYPE_UNSET && cellTypeRead != cellType {
 		return "", errors.New("invalid cell type.")
 	}
 	return c.f.GetCellValue(sheet, axis)
